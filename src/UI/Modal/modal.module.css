@@ -1,0 +1,71 @@
+/* Стили для модального окна (оверлей) */
+.mymodal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+/* Модификатор видимости */
+.mymodal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Карточка с содержимым модалки */
+.myModelContent {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Анимация появления карточки */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Если в модалке много контента — ограничим высоту */
+.myModelContent { max-height: calc(100vh - 80px); }
+
+/* Кнопка закрытия (если добавите) */
+.mymodalClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease, transform 120ms ease;
+}
+.mymodalClose:hover { background: rgba(16,24,40,0.06); transform: scale(1.03); }
+
+/* Адаптив */
+@media (max-width: 520px) {
+  .myModelContent { padding: 14px; border-radius: 10px; }
+  .mymodal { padding: 12px; }
+}

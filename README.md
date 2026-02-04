@@ -1,70 +1,239 @@
-# Getting Started with Create React App
+# Posts Management Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Modern React application for managing posts with authentication, routing, and real-time filtering.
 
-## Available Scripts
+## 🎯 Overview
 
-In the project directory, you can run:
+Educational project demonstrating modern React development practices including custom hooks, Context API, protected routes, and API integration. Features include user authentication, post management (create, view, delete), search & filtering, pagination, and responsive design.
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Authentication System** - Login/logout with LocalStorage persistence
+- **Post Management** - Create, view, and delete posts with smooth animations
+- **Advanced Filtering** - Real-time search and sorting (by title/description)
+- **Pagination** - Navigate through posts with dynamic page controls
+- **Post Details** - View individual posts with comments
+- **Responsive Design** - Fully adapted for mobile, tablet, and desktop
+- **Protected Routes** - Public pages (login) and private pages (posts, about)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Tech Stack
 
-### `npm test`
+### Core
+- **React 19.2.4** - UI library
+- **React Router DOM 7.13.0** - Client-side routing
+- **Axios 1.13.4** - HTTP client for API requests
+- **CSS Modules** - Scoped component styling
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Custom Hooks
+- `useFetching` - Async data fetching with loading/error states
+- `usePosts` - Combined sorting and searching logic
+- `usePagination` - Dynamic pagination array generation
+- `useSortedPosts` - Memoized post sorting
 
-### `npm run build`
+### React Features Used
+- `useState`, `useEffect`, `useMemo`, `useCallback`
+- `useContext` (Authentication state)
+- `useNavigate`, `useParams` (Routing)
+- `React.memo` (Performance optimization)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📁 Project Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+src/
+├── API/              # Service layer for API calls
+├── Pages/            # Page-level components
+├── componets/        # Feature components
+├── UI/               # Reusable UI components
+├── hooks/            # Custom React hooks
+├── styles/           # Modular CSS files
+├── router/           # Route configurations
+└── context/          # Global state (AuthContext)
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🚀 Quick Start
 
-### `npm run eject`
+```bash
+# Install dependencies
+npm install
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Start development server
+npm start
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Build for production
+npm run build
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Application will run at `http://localhost:3000`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🔌 Backend Integration
 
-## Learn More
+Currently using **JSONPlaceholder** as a mock API. To connect your own backend:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 1. Update API Service
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Edit `src/API/PostService.js`:
 
-### Code Splitting
+```javascript
+import axios from "axios";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+const API_URL = 'http://localhost:5000/api'; // Your backend URL
 
-### Analyzing the Bundle Size
+export default class PostService {
+    static async getAll(limit = 10, page = 1) {
+        const response = await axios.get(`${API_URL}/posts`, {
+            params: { _limit: limit, _page: page }
+        });
+        return response;
+    }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+    static async getById(id) {
+        const response = await axios.get(`${API_URL}/posts/${id}`);
+        return response;
+    }
 
-### Making a Progressive Web App
+    static async create(post) {
+        const response = await axios.post(`${API_URL}/posts`, post);
+        return response;
+    }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+    static async delete(id) {
+        const response = await axios.delete(`${API_URL}/posts/${id}`);
+        return response;
+    }
+}
+```
 
-### Advanced Configuration
+### 2. Update Comments Service
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Edit `src/API/CommentsService.js`:
 
-### Deployment
+```javascript
+import axios from "axios";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+const API_URL = 'http://localhost:5000/api';
 
-### `npm run build` fails to minify
+export default class CommentsService {
+    static async getAll(postId) {
+        const response = await axios.get(`${API_URL}/comments`, {
+            params: { postId: postId }
+        });
+        return response;
+    }
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 3. Backend Requirements
+
+Your backend should provide these endpoints:
+
+```
+GET    /api/posts              - Get all posts (with pagination)
+GET    /api/posts/:id          - Get single post
+POST   /api/posts              - Create new post
+DELETE /api/posts/:id          - Delete post
+GET    /api/comments?postId=1  - Get comments for post
+```
+
+**Response format for posts:**
+```json
+{
+  "id": 1,
+  "title": "Post title",
+  "body": "Post content"
+}
+```
+
+**Response headers for pagination:**
+```
+x-total-count: 100  // Total number of posts
+```
+
+### 4. Authentication (Optional)
+
+To add real authentication, update `src/Pages/Login.jsx`:
+
+```javascript
+const loginHandler = async (event) => {
+    event.preventDefault();
+    
+    try {
+        const response = await axios.post('http://localhost:5000/api/auth/login', {
+            username: username,
+            password: password
+        });
+        
+        localStorage.setItem('auth', response.data.token);
+        setIsAuth(true);
+    } catch (error) {
+        console.error('Login failed:', error);
+    }
+};
+```
+
+Add token to requests in `PostService.js`:
+
+```javascript
+const token = localStorage.getItem('auth');
+const config = {
+    headers: { Authorization: `Bearer ${token}` }
+};
+```
+
+## 📝 Environment Variables
+
+Create `.env` file in root:
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+Use in code:
+
+```javascript
+const API_URL = process.env.REACT_APP_API_URL || 'https://jsonplaceholder.typicode.com';
+```
+
+## 🎨 Customization
+
+### Change Theme Colors
+
+Edit `src/styles/variables.css`:
+
+```css
+:root {
+    --accent: #3b82f6;        /* Primary color */
+    --accent-hover: #2563eb;  /* Hover state */
+    --bg-primary: #f8fafc;    /* Background */
+    /* ...other variables */
+}
+```
+
+### Add New Routes
+
+1. Create page component in `src/Pages/`
+2. Add route to `src/router/routsJS.js`:
+
+```javascript
+export const privatRoutes = [
+    {path: '/my-page', component: <MyPage />},
+    // ...existing routes
+];
+```
+
+## 🧪 Testing
+
+```bash
+npm test
+```
+
+## 📦 Build
+
+```bash
+npm run build
+```
+
+Optimized production build will be in `build/` folder.
+
+---
+
+**Built with React** • Educational project demonstrating modern React patterns (youtu.be/GNrdg3PzpJQ?si=qLv1uZNqi0hz6Wji)
