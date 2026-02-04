@@ -46,7 +46,8 @@ const Login = () => {
                             <input type="checkbox" />
                             <span>Remember me</span>
                         </label>
-                        <a href="#" className="forgot-link">Forgot password?</a>
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a href="#" className="forgot-link" onClick={(e) => e.preventDefault()}>Forgot password?</a>
                     </div>
 
                     <Button type="submit" className="login-button">
@@ -55,7 +56,8 @@ const Login = () => {
                 </form>
 
                 <div className="login-footer">
-                    <p>Don't have an account? <a href="#">Sign up</a></p>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <p>Don't have an account? <a href="#" onClick={(e) => e.preventDefault()}>Sign up</a></p>
                 </div>
             </div>
         </div>
